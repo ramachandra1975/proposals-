@@ -146,7 +146,38 @@
             <textarea id="notes" placeholder="AI/ML, Blockchain, 99.99% SLA...">Premium features: Dedicated C-level manager, quarterly board reviews, 36-month warranty</textarea>
           </div>
         </div>
-        
+
+        <!-- NEW BLOCK: Describe product / domain -->
+        <div class="form-row full">
+          <div>
+            <label>📝 Describe your product or domain</label>
+            <p class="instruction" style="font-size: 0.925rem; color: #4b5563; margin-bottom: 8px;">
+              Please describe the product, service, or domain for which you are applying.<br>
+              Include key features, target customers, business model, and how your solution addresses the need.<br>
+              This detailed text will be included in the final proposal and should be written in clear, paragraph‑style English.
+            </p>
+            <textarea id="productDescription" rows="6" placeholder="Write a detailed description of your product or domain here..."></textarea>
+          </div>
+        </div>
+
+        <!-- NEW BLOCK: Number of proposal pages -->
+        <div class="form-row">
+          <div>
+            <label>📄 Number of proposal pages</label>
+            <p class="instruction" style="font-size: 0.925rem; color: #4b5563; margin-bottom: 8px;">
+              Enter the exact number of pages your proposal will contain.<br>
+              That number of pages must be maintained in the submitted document (for example, if you enter “8”, the proposal PDF should be exactly 8 pages long).
+            </p>
+            <input 
+              type="number" 
+              id="proposalPages" 
+              min="1" 
+              max="500" 
+              placeholder="E.g., 12"
+            >
+          </div>
+        </div>
+
         <div class="profit-card" id="profitCard">
           <div style="font-size: 1.2rem; font-weight: 600;">Expected Revenue:</div>
           <div class="profit-main" id="totalRevenue">₹7.50 Cr</div>
@@ -178,8 +209,8 @@
     let currentTier = 'elite';
     const tiers = {
       standard: { mult: 1.20, margin: '20%', color: '#10b981' },
-      premium: { mult: 1.35, margin: '35%', color: '#8b5cf6' },
-      elite: { mult: 1.50, margin: '50%', color: '#ec4899' }
+      premium:  { mult: 1.35, margin: '35%', color: '#8b5cf6' },
+      elite:    { mult: 1.50, margin: '50%', color: '#ec4899' }
     };
 
     function setTier(tier) {
@@ -218,6 +249,8 @@
         duration: document.getElementById('duration').value,
         title: document.getElementById('projectTitle').value,
         notes: document.getElementById('notes').value,
+        productDescription: document.getElementById('productDescription').value,
+        proposalPages: document.getElementById('proposalPages').value || 12,
         tier: tiers[currentTier],
         date: new Date().toLocaleDateString('en-IN')
       };
@@ -248,6 +281,11 @@
         </div>
         
         <div class="section">
+          <h2>📝 Product / Domain Description</h2>
+          <p>${data.productDescription || 'No detailed description provided.'}</p>
+        </div>
+
+        <div class="section">
           <h2>💰 Detailed Cost Breakdown</h2>
           ${createCostTable(data)}
         </div>
@@ -265,65 +303,10 @@
         
         <div class="section">
           <h2>⏰ Timeline</h2>
+          <p><strong>Document length:</strong> ${data.proposalPages} pages (as specified in the proposal form).</p>
           <table>
             <tr><th>Phase</th><th>Months</th><th>Value</th></tr>
             <tr><td>Planning</td><td>1-3</td><td>₹${(data.total*0.2).toLocaleString()}</td></tr>
             <tr><td>Execution</td><td>4-12</td><td>₹${(data.total*0.5).toLocaleString()}</td></tr>
             <tr><td>Delivery</td><td>13-18</td><td>₹${(data.total*0.3).toLocaleString()}</td></tr>
           </table>
-        </div>
-        
-        <div class="section" style="background: #f0f9ff; padding: 30px; border-radius: 15px; border-left: 5px solid #0ea5e9;">
-          <h2 style="color: #0369a1;">💎 TOTAL PROPOSAL VALUE</h2>
-          <h1 style="font-size: 4rem; color: #ec4899; text-align: center; margin: 20px 0;">₹${data.total.toLocaleString()} Cr</h1>
-          <p style="text-align: center; font-size: 1.3rem;"><strong>Your Investment → Our ${data.tier.margin} Margin → Guaranteed Success</strong></p>
-        </div>
-      `;
-    }
-
-    function createCostTable(data) {
-      const items = [
-        ['Consulting', 0.08], ['Design', 0.12], ['Development', 0.35], 
-        ['Testing', 0.10], ['Deployment', 0.10], ['Management', 0.15], ['Contingency', 0.10]
-      ];
-      
-      let table = '<table><tr><th>Component</th><th>Value</th><th>%</th></tr>';
-      items.forEach(([name, pct]) => {
-        const value = (data.total * pct).toFixed(2);
-        table += `<tr><td>${name}</td><td>₹${value} Cr</td><td>${(pct*100).toFixed(0)}%</td></tr>`;
-      });
-      table += `
-        <tr style="font-weight: bold; background: #fef3c7;">
-          <td>YOUR COST (Base)</td><td>₹${data.baseCost.toLocaleString()} Cr</td><td>-</td>
-        </tr>
-        <tr class="total-profit">
-          <td><strong>PROPOSAL TOTAL</strong></td><td><strong>₹${data.total.toLocaleString()} Cr</strong></td><td><strong>${data.tier.margin}</strong></td>
-        </tr>
-      </table>`;
-      return table;
-    }
-
-    function getDomainDescription(domain) {
-      const desc = {
-        software: 'enterprise software platform',
-        digital: 'digital transformation solution',
-        infra: 'infrastructure development',
-        manufacturing: 'Industry 4.0 factory automation'
-      };
-      return desc[domain] || 'premium solution';
-    }
-
-    function downloadAsPDF() {
-      window.print();
-      alert('✅ Use browser Print → Save as PDF for 500+ page document!');
-    }
-
-    function printProposal() {
-      window.print();
-    }
-
-    // Auto-update profit on load
-    updateProfit();
-  </script>
-</body>
-</html>
